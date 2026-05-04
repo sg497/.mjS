@@ -1,167 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Web | KA</title>
-  </head>
-  <body>
-    <header>
-      <nav>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Luxus Book - Secure Digital Vault</title>
+    
+    <style>
+        /* --- ESTILO LUXUS BOOK --- */
+        :root {
+            --luxus-gold: #D4AF37;
+            --luxus-black: #0a0a0a;
+            --luxus-white: #ffffff;
+        }
 
-        <div class="nav__header">
-          <div class="nav__logo">
-          <a href="#">
-            KandengueAtrevido
-          </a> 
-        </div>
-          <div class="nav__menu__btn" id="menu-btn">
-            <i class="ri-menu-line"></i>
-          </div>
-        </div>
-        <ul class="nav__links" id="nav-links">
-          
-          <li><a href="Candidatura  KA/Ceo.html">SOBRE N√ìS</a></li>
-          <li><a href="Untitled-23.html">SERVI√áOS</a></li>
-          <li><a href="#contact">APP</a></li>
-          <li><a href="Project Files/ContactSection.html">CONTACTOS</a></li>
-          <li class="nav__links__btn">
-          </div>
-            <div class="dropdown">
-              <button class="btn dropdown-toggle" onclick="window.location.href='Candidatura%20%20KA/index.html'">CANDIDATAR-ME</button>
-            </div>
-          </li>
-        </ul>
-      </nav>
-      <div class="section__container header__container" id="home">
-        <div class="header__image">
-          <img src="assets/Bra.png" alt="header" />
-        </div>
-        <div class="header__content">
-          <h1>Seguran√ßa e confian√ßa</h1>
-          <p>
-            Imagine enviar suas encomendas sem preocupa√ß√µes. 
-            Com a Kandengue Atrevido, voc√™ relaxa enquanto cuidamos de tudo por voc√™.
-          </p>
-          <div class="header__links">
-            <a href="#">
-              <img src="assets/store.jpg" alt="app store" />
-            </a>
-            <a href="#">
-              <img src="assets/play.png" alt="play" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </header>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--luxus-black);
+            font-family: 'Georgia', serif;
+            overflow: hidden; /* Impede scroll desnecess·rio */
+            height: 100%;
+        }
 
-    <section class="section__container steps__container" id="rent">
-      <p class="section__subheader">Fa√ßa o seu pr√≥prio kumbu</p>
-      <h2 class="section__header">SEJA O SEU PR√ìPRIO BOSS</h2>
-      <h4></h4>
-      <div class="steps__grid">
-        <div class="steps__card">
-          <span><i class="ri-money-dollar-circle-fill"></i></span>
-          <h4>Ganhos confiaveis</h4>
-          <p>
-            Ganhe dinheiro, fique com suas gorjetas e resgate tudo quando quiser.
-          </p>
-        </div>
-        <div class="steps__card">
-          <span><i class="ri-calendar-check-fill"></i></span>
-          <h4>Hor√°rio flexivel</h4>
-          <p>
-           Fa√ßa seu dinheiro, sem precisar de se preocupar com o hor√°rio. Seja seu pr√≥rpio chefe.
-          </p>
-        </div>
-        <div class="steps__card">
-          <span><i class="ri-bookmark-3-fill"></i></span>
-          <h4>Receba instantaneamente</h4>
-          <p>
-            Retire o seu valor quando quiser.
-          </p>
-        </div>
-      </div>
-    </section>
+        #luxus-reader-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            user-select: none !important;
+            -webkit-user-select: none;
+        }
 
-    <section class="section__container service__container" id="service">
-      <div class="service__image">
-        <img src="assets/ABCSD_preview_rev_10.jpg" alt="service" />
-      </div>
-      <div class="service__content">
-        <h2 class="section__header">
-          Sinta a melhor experi√™ncia com nossas ofertas de entregas.
-        </h2>
-        <ul class="service__list">
-          <li>
-            <span><i class="ri-price-tag-3-fill"></i></span>
+        /* --- MARCA D'¡GUA DIN¬MICA --- */
+        #luxus-tracker {
+            position: fixed;
+            z-index: 9999;
+            opacity: 0.12;
+            color: var(--luxus-gold);
+            pointer-events: none;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* --- CABE«ALHO --- */
+        .luxus-header {
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            background: linear-gradient(to bottom, #1a1a1a, transparent);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 100;
+        }
+
+        .luxus-header h1 {
+            color: var(--luxus-gold);
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 5px;
+        }
+
+        .luxus-header p {
+            color: var(--luxus-white);
+            font-size: 10px;
+            margin: 5px 0 0;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        /* --- ¡REA DO LEITOR --- */
+        #canvas-holder {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            width: 100%;
+            overflow-y: auto;
+            background: radial-gradient(circle, #1a1a1a 0%, #0a0a0a 100%);
+        }
+
+        #luxus-canvas {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            max-width: 100%;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            background-color: white;
+            transition: filter 0.3s ease;
+        }
+
+        /* --- ALERTAS E BLOQUEIOS --- */
+        #violation-alert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--luxus-black);
+            color: #ff4444;
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: sans-serif;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* ESCUDO DE IMPRESS√O */
+        @media print {
+            body { display: none !important; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;">
+
+    <div id="luxus-reader-container">
+        <!-- Marca d'·gua de Rastreamento -->
+        <div id="luxus-tracker">LUXUS BOOK - PROPRIEDADE EXCLUSIVA - ID: 2026-X</div>
+        
+        <!-- Aviso de ViolaÁ„o -->
+        <div id="violation-alert">
             <div>
-              <h4>Servi√ßos para todos os bolsos</h4>
-              <p>
-                Garantimos que voc√™ obtenha o melhor servi√ßo, com pre√ßo para todos os bolsos.
-              </p>
+                <h1 style="font-size: 40px;">??</h1>
+                <h2>ACESSO BLOQUEADO</h2>
+                <p>Foi detectada uma tentativa de captura de ecr„ ou interferÍncia tÈcnica.</p>
+                <p style="color: gray; font-size: 12px;">Esta ocorrÍncia foi enviada para o administrador do Luxus Book.</p>
             </div>
-          </li>
-          <li>
-            <span><i class="ri-wallet-fill"></i></span>
-            <div>
-              <h4>Garantia do melhor servi√ßo</h4>
-              <p>
-                Garantimos que voc√™ obtenha taxas e servi√ßos com a maior qualidade e atendimento do mercado, para que com
-                sua confian√ßa possamos continuar plantando o melhor servi√ßo.
-            </div>
-          </li>
-          <li>
-            <span><i class="ri-customer-service-fill"></i></span>
-            <div>
-              <h4>Suporte 24/7</h4>
-              <p>
-                Nossa equipe dedicada est√° dispon√≠vel 24 horas por dia, 7 dias por semana para ajud√°-lo com qualquer
-                d√∫vidas ou preocupa√ß√µes, garantindo uma experi√™ncia de entrega tranquila.
-              </p>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </section>
-
-    <section class="section__container download__container" id="contact">
-      <div class="download__grid">
-        <div class="download__content">
-          <h2 class="section__header">Baixe gr√°tis o app Kandengue Atrevido </h2>
-          <p>
-            Baixe o app Kandengue Atravido gerencie suas entregas, encontre
-            ofertas exclusivas e acesso ao suporte 24 horas por dia, 7 dias por semana, tudo a partir do seu dispositivo m√≥vel.
-
-          </p>
-          <div class="download__links">
-            <a href="#">
-              <img src="assets/store.jpg" alt="app store" />
-            </a>
-            <a href="#">
-              <img src="assets/play.png" alt="play" />
-            </a>
-          </div>
         </div>
-        <div class="download__image">
-          <img src="assets/mockup_preview_rev_1.png" alt="download" />
+
+        <header class="luxus-header">
+            <h1>LUXUS BOOK</h1>
+            <p>Leitura Segura e Exclusiva</p>
+        </header>
+
+        <div id="canvas-holder">
+            <canvas id="luxus-canvas"></canvas>
         </div>
-      </div>
-    </section>
+    </div>
 
-    <footer>
-      <div class="section__container footer__bar">
-        <h4>Kandengue Atrevido</h4>
-        <p>Copyright ¬© 2024 Sg. All rights reserved.</p>
-      </div>
-    </footer>
+    <script>
+        (function() {
+            'use strict';
 
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script src="main.js"></script>
-  </body>
+            // --- 1. BLOQUEIO DE ENGENHARIA REVERSA (ANTI-DEBUG) ---
+            setInterval(function() {
+                const t0 = performance.now();
+                debugger; 
+                const t1 = performance.now();
+                if (t1 - t0 > 100) {
+                    document.getElementById('luxus-reader-container').style.display = 'none';
+                    document.body.innerHTML = "<div style='color:white; text-align:center; margin-top:20%;'>Acesso revogado: Uso de ferramentas de inspeÁ„o detectado.</div>";
+                }
+            }, 500);
+
+            // --- 2. PROTE«√O CONTRA CAPTURA (SCREENSHOT/PRINT) ---
+            window.addEventListener('keyup', (e) => {
+                if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                    navigator.clipboard.writeText("Acesso Proibido - Luxus Book");
+                    triggerViolation();
+                }
+            });
+
+            function triggerViolation() {
+                document.getElementById('canvas-holder').style.display = 'none';
+                document.getElementById('violation-alert').style.display = 'flex';
+            }
+
+            // --- 3. BLOQUEIO DE TECLAS DE ATALHO ---
+            window.addEventListener('keydown', (e) => {
+                const forbidden = ['s', 'p', 'u', 'i', 'c', 'j'];
+                if ((e.ctrlKey || e.metaKey) && forbidden.includes(e.key.toLowerCase())) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // --- 4. MARCA D'¡GUA DIN¬MICA (TRACKING) ---
+            const tracker = document.getElementById('luxus-tracker');
+            document.addEventListener('mousemove', (e) => {
+                tracker.style.left = (e.clientX + 20) + 'px';
+                tracker.style.top = (e.clientY + 20) + 'px';
+            });
+
+            // --- 5. RENDERIZA«√O SEGURA (SimulaÁ„o de carga) ---
+            const canvas = document.getElementById('luxus-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function renderLuxusPage() {
+                canvas.width = 600;
+                canvas.height = 800;
+                
+                // SimulaÁ„o de conte˙do desenhado (O texto nunca È texto real no DOM)
+                ctx.fillStyle = "white";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = "#333";
+                ctx.font = "24px Georgia";
+                ctx.fillText("CapÌtulo I: A Arte da Exclusividade", 50, 100);
+                
+                ctx.font = "16px Georgia";
+                const lines = [
+                    "Este conte˙do est· protegido pela tecnologia Luxus Book.",
+                    "O texto que vocÍ est· a ler n„o pode ser copiado,",
+                    "pois È renderizado como um elemento gr·fico din‚mico.",
+                    "",
+                    "O acesso via ferramentas de programador resultar· no",
+                    "bloqueio imediato da conta do utilizador."
+                ];
+                
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, 50, 150 + (index * 30));
+                });
+
+                // RuÌdo visual anti-OCR
+                ctx.fillStyle = "rgba(0,0,0,0.01)";
+                for(let i=0; i<canvas.width; i+=5) {
+                    ctx.fillRect(i, 0, 1, canvas.height);
+                }
+            }
+
+            renderLuxusPage();
+        })();
+    </script>
+</body>
 </html>
