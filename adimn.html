@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #0f172a;
+  color: white;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background: #020617;
+  height: 100vh;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  color: #38bdf8;
+}
+
+.menu-item {
+  margin: 15px 0;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.menu-item:hover {
+  opacity: 1;
+}
+
+/* Conteúdo */
+.main {
+  flex: 1;
+  padding: 30px;
+}
+
+.card {
+  background: #020617;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+input, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  background: #38bdf8;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #0ea5e9;
+}
+
+.user {
+  background: #1e293b;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.delete {
+  color: red;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>📘 Admin</h2>
+  <div class="menu-item" onclick="showSection('dashboard')">Dashboard</div>
+  <div class="menu-item" onclick="showSection('upload')">Upload Ebook</div>
+  <div class="menu-item" onclick="showSection('users')">Usuários</div>
+</div>
+
+<div class="main">
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="card">
+    <h2>📊 Visão geral</h2>
+    <p>Total de usuários: <span id="totalUsers">0</span></p>
+  </div>
+
+  <!-- Upload -->
+  <div id="upload" class="card" style="display:none;">
+    <h2>📤 Upload do Ebook</h2>
+    <input type="file">
+    <button onclick="alert('Upload simulado')">Enviar</button>
+  </div>
+
+  <!-- Usuários -->
+  <div id="users" class="card" style="display:none;">
+    <h2>👥 Gerenciar Usuários</h2>
+
+    <input id="username" placeholder="Usuário">
+    <input id="password" type="password" placeholder="Senha">
+    <button onclick="addUser()">Criar usuário</button>
+
+    <div id="userList"></div>
+  </div>
+
+</div>
+
+<script>
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
+function showSection(section) {
+  document.querySelectorAll(".card").forEach(c => c.style.display = "none");
+  document.getElementById(section).style.display = "block";
+}
+
+function addUser() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  if(!username || !password) return alert("Preencha tudo");
+
+  users.push({ username, password });
+  localStorage.setItem("users", JSON.stringify(users));
+
+  renderUsers();
+}
+
+function deleteUser(index) {
+  users.splice(index, 1);
+  localStorage.setItem("users", JSON.stringify(users));
+  renderUsers();
+}
+
+function renderUsers() {
+  const list = document.getElementById("userList");
+  list.innerHTML = "";
+
+  users.forEach((u, i) => {
+    list.innerHTML += `
+      <div class="user">
+        ${u.username}
+        <span class="delete" onclick="deleteUser(${i})">X</span>
+      </div>
+    `;
+  });
+
+  document.getElementById("totalUsers").innerText = users.length;
+}
+
+renderUsers();
+</script>
+
+</body>
+</html>
