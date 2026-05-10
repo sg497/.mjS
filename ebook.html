@@ -4,29 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Protected Ebook</title>
+<title>Ebook Protegido</title>
 
 <style>
 
 html,body{
     margin:0;
     background:#000;
-    overflow:hidden;
+    overflow-x:hidden;
+    font-family:Arial, sans-serif;
     user-select:none;
-    touch-action:none;
-    font-family:Arial;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
 }
 
-/* Canvas protegido */
-#viewer{
-    position:fixed;
-    inset:0;
+/* páginas */
+.page{
     width:100%;
-    height:100%;
-    background:#000;
+    max-width:900px;
+    margin:20px auto;
+    display:block;
+    border-radius:10px;
+    pointer-events:none;
+    position:relative;
+    z-index:1;
 }
 
-/* Watermark dinâmica */
+/* watermark */
 #watermark{
     position:fixed;
     inset:0;
@@ -43,7 +47,7 @@ html,body{
     white-space:nowrap;
 }
 
-/* Overlay anti-foto */
+/* noise anti-foto */
 #noise{
     position:fixed;
     inset:0;
@@ -53,7 +57,7 @@ html,body{
     mix-blend-mode:overlay;
 }
 
-/* Bloqueio */
+/* bloqueio */
 #blocked{
     position:fixed;
     inset:0;
@@ -63,22 +67,40 @@ html,body{
     align-items:center;
     justify-content:center;
     z-index:999999;
-    font-size:22px;
+    font-size:25px;
+    text-align:center;
+    padding:20px;
+}
+
+/* blur ao bloquear */
+.blur{
+    filter:blur(50px);
+}
+
+/* impedir arrasto */
+img{
+    -webkit-user-drag:none;
 }
 
 </style>
 </head>
+
 <body>
 
-<canvas id="viewer"></canvas>
-<canvas id="noise"></canvas>
-
+<!-- WATERMARK -->
 <div id="watermark"></div>
 
+<!-- NOISE -->
+<canvas id="noise"></canvas>
+
+<!-- BLOQUEIO -->
 <div id="blocked">
 Conteúdo protegido
 </div>
-    
+
+<!-- EBOOK -->
+<div id="ebook">
+
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0001.jpg" class="page">
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0002.jpg" class="page">
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0003.jpg" class="page">
@@ -100,12 +122,13 @@ Conteúdo protegido
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0019.jpg" class="page">
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0020.jpg" class="page">
 
+</div>
 
 <script>
 
-//////////////////////////////
+///////////////////////////
 // LOGIN
-//////////////////////////////
+///////////////////////////
 
 const user = localStorage.getItem("loggedUser");
 
@@ -113,9 +136,9 @@ if(!user){
     location.href="index.html";
 }
 
-//////////////////////////////
-// WATERMARK DINÂMICA
-//////////////////////////////
+///////////////////////////
+// WATERMARK
+///////////////////////////
 
 const wm = document.getElementById("watermark");
 
@@ -137,7 +160,7 @@ function createMarks(){
             div.innerText=
             user+
             " • "+
-            new Date().toLocaleTimeString()+
+            new Date().toLocaleString()+
             " • "+
             location.hostname;
 
@@ -151,9 +174,11 @@ function createMarks(){
 
 createMarks();
 
-//////////////////////////////
+setInterval(createMarks,3000);
+
+///////////////////////////
 // NOISE ANTI-FOTO
-//////////////////////////////
+///////////////////////////
 
 const noise=document.getElementById("noise");
 const nctx=noise.getContext("2d");
@@ -172,7 +197,7 @@ function drawNoise(){
         img.data[i]=v;
         img.data[i+1]=v;
         img.data[i+2]=v;
-        img.data[i+3]=15;
+        img.data[i+3]=12;
 
     }
 
@@ -182,88 +207,12 @@ function drawNoise(){
 
 setInterval(drawNoise,120);
 
-//////////////////////////////
-// CANVAS PROTEGIDO
-//////////////////////////////
-
-const canvas=document.getElementById("viewer");
-const ctx=canvas.getContext("2d");
-
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-
-const pages=[];
-
-for(let i=1;i<=20;i++){
-
-    const img=new Image();
-
-    img.src=
-    `secure/page-${String(i).padStart(4,'0')}.webp`;
-
-    pages.push(img);
-
-}
-
-let current=0;
-
-function render(){
-
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    const img=pages[current];
-
-    if(!img.complete)return;
-
-    const ratio=Math.min(
-        canvas.width/img.width,
-        canvas.height/img.height
-    );
-
-    const w=img.width*ratio;
-    const h=img.height*ratio;
-
-    ctx.drawImage(
-        img,
-        (canvas.width-w)/2,
-        (canvas.height-h)/2,
-        w,
-        h
-    );
-
-}
-
-pages.forEach(img=>{
-    img.onload=render;
-});
-
-//////////////////////////////
-// NAVEGAÇÃO
-//////////////////////////////
-
-window.addEventListener("wheel",e=>{
-
-    if(e.deltaY>0){
-        current=Math.min(current+1,pages.length-1);
-    }else{
-        current=Math.max(current-1,0);
-    }
-
-    render();
-
-});
-
-//////////////////////////////
+///////////////////////////
 // BLOQUEIOS
-//////////////////////////////
+///////////////////////////
 
 document.addEventListener(
 "contextmenu",
-e=>e.preventDefault()
-);
-
-document.addEventListener(
-"dragstart",
 e=>e.preventDefault()
 );
 
@@ -273,95 +222,104 @@ e=>e.preventDefault()
 );
 
 document.addEventListener(
-"keydown",
-e=>{
+"cut",
+e=>e.preventDefault()
+);
+
+document.addEventListener(
+"dragstart",
+e=>e.preventDefault()
+);
+
+document.addEventListener(
+"selectstart",
+e=>e.preventDefault()
+);
+
+///////////////////////////
+// BLOQUEAR TECLAS
+///////////////////////////
+
+document.addEventListener("keydown", e=>{
 
     if(
         e.key==="F12" ||
+
         (e.ctrlKey &&
         ["s","u","p","c","a"].includes(
-        e.key.toLowerCase()))
+        e.key.toLowerCase()
+        ))
+
     ){
         e.preventDefault();
     }
 
 });
 
-//////////////////////////////
+///////////////////////////
 // DETECTAR DEVTOOLS
-//////////////////////////////
+///////////////////////////
 
 setInterval(()=>{
 
     if(
-        window.outerWidth-window.innerWidth>150 ||
-        window.outerHeight-window.innerHeight>150
+        window.outerWidth-window.innerWidth>160 ||
+        window.outerHeight-window.innerHeight>160
     ){
-
-        lock();
-
+        lockScreen();
     }
 
 },1000);
 
-//////////////////////////////
-// DETECTAR TROCA DE ABA
-//////////////////////////////
+///////////////////////////
+// TROCA DE ABA
+///////////////////////////
 
 document.addEventListener(
 "visibilitychange",
 ()=>{
 
     if(document.hidden){
-        lock();
+        lockScreen();
     }
 
 });
 
-//////////////////////////////
-// BLOQUEAR TELA
-//////////////////////////////
-
-function lock(){
-
-    document.getElementById(
-    "blocked").style.display="flex";
-
-    canvas.style.filter="blur(80px)";
-
-}
-
-//////////////////////////////
-// MOBILE
-//////////////////////////////
+///////////////////////////
+// MOBILE MULTI TOUCH
+///////////////////////////
 
 document.addEventListener(
 "touchstart",
 e=>{
 
     if(e.touches.length>2){
-        lock();
+        lockScreen();
     }
 
 });
 
-//////////////////////////////
-// AUTO REFRESH WATERMARK
-//////////////////////////////
-
-setInterval(createMarks,3000);
-
-//////////////////////////////
-// DESATIVAR SELEÇÃO
-//////////////////////////////
-
-window.onselectstart=()=>false;
-
-//////////////////////////////
-// DESATIVAR PRINT
-//////////////////////////////
+///////////////////////////
+// PRINT
+///////////////////////////
 
 window.onbeforeprint=()=>false;
+
+///////////////////////////
+// LOCK
+///////////////////////////
+
+function lockScreen(){
+
+    document
+    .getElementById("blocked")
+    .style.display="flex";
+
+    document
+    .getElementById("ebook")
+    .classList.add("blur");
+
+}
 
 </script>
 
