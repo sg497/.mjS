@@ -67,25 +67,59 @@ body{
 
 <script>
 
-const user = localStorage.getItem("loggedUser") || "Usuário";
+// VERIFICAR LOGIN
+const user = localStorage.getItem("loggedUser");
 
+if(!user){
+  window.location.href = "login.html";
+}
+
+// MOSTRAR NOME
+document.getElementById("welcome").innerText =
+"Ebook de " + user;
+
+// MARCA D'ÁGUA
 document.getElementById("watermark").innerText =
 "PROTEGIDO • " + user;
 
-// Bloquear clique direito
+// SAIR
+function logout(){
+  localStorage.removeItem("loggedUser");
+  window.location.href = "login.html";
+}
+
+// BLOQUEAR CLIQUE DIREITO
 document.addEventListener("contextmenu", e => e.preventDefault());
 
-// Bloquear atalhos
+// BLOQUEAR TECLAS
 document.addEventListener("keydown", e => {
 
+  // F12
+  if(e.key === "F12"){
+    e.preventDefault();
+  }
+
+  // CTRL + atalhos
   if(
-    e.key === "F12" ||
-    (e.ctrlKey && ["s","p","u","c"].includes(e.key.toLowerCase()))
+    e.ctrlKey &&
+    ["s","u","p","c"].includes(e.key.toLowerCase())
   ){
     e.preventDefault();
   }
 
 });
+
+// DETECTAR DEVTOOLS
+setInterval(() => {
+
+  if(
+    window.outerWidth - window.innerWidth > 160 ||
+    window.outerHeight - window.innerHeight > 160
+  ){
+    document.body.innerHTML = "";
+  }
+
+},1000);
 
 </script>
 
