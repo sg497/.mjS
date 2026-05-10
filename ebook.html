@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ebook</title>
+
+<style>
+
+body{
+  margin:0;
+  background:#0f172a;
+  font-family:Arial;
+  text-align:center;
+  overflow-x:hidden;
+  user-select:none;
+}
+
+.page{
+  width:100%;
+  max-width:900px;
+  margin:20px auto;
+  display:block;
+  pointer-events:none;
+  border-radius:10px;
+}
+
+.watermark{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) rotate(-30deg);
+  font-size:40px;
+  color:rgba(255,255,255,0.08);
+  z-index:9999;
+  pointer-events:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="watermark" id="watermark"></div>
+
+<img src="pages/page-1.jpg" class="page">
+<img src="pages/page-2.jpg" class="page">
+<img src="pages/page-3.jpg" class="page">
+
+<script>
+
+const user = localStorage.getItem("loggedUser") || "Usuário";
+
+document.getElementById("watermark").innerText =
+"PROTEGIDO • " + user;
+
+// Bloquear clique direito
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// Bloquear atalhos
+document.addEventListener("keydown", e => {
+
+  if(
+    e.key === "F12" ||
+    (e.ctrlKey && ["s","p","u","c"].includes(e.key.toLowerCase()))
+  ){
+    e.preventDefault();
+  }
+
+});
+
+</script>
+
+</body>
+</html>
