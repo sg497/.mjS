@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ebook Protegido</title>
+<title>Ebook Ultra Protegido</title>
 
 <style>
 
@@ -12,72 +13,149 @@ html,body{
     margin:0;
     background:#000;
     overflow-x:hidden;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
+
     user-select:none;
     -webkit-user-select:none;
     -webkit-touch-callout:none;
+
+    overscroll-behavior:none;
 }
 
-/* páginas */
-.page{
+/* viewer */
+
+#ebook{
+    position:relative;
+    z-index:2;
+}
+
+/* canvas */
+
+.pageCanvas{
     width:100%;
     max-width:900px;
-    margin:20px auto;
     display:block;
+    margin:20px auto;
     border-radius:10px;
+
+    image-rendering:auto;
+
     pointer-events:none;
-    position:relative;
-    z-index:1;
 }
 
 /* watermark */
+
 #watermark{
     position:fixed;
     inset:0;
     z-index:99999;
-    pointer-events:none;
     overflow:hidden;
+    pointer-events:none;
 }
 
 .mark{
+
     position:absolute;
-    color:rgba(255,255,255,.06);
-    font-size:22px;
-    transform:rotate(-25deg);
+
+    color:rgba(255,0,0,.14);
+
+    font-size:30px;
+
+    font-weight:bold;
+
     white-space:nowrap;
+
+    transform:
+    rotate(-25deg);
+
+    mix-blend-mode:difference;
+
+    animation:float 8s infinite alternate;
 }
 
-/* noise anti-foto */
+@keyframes float{
+
+    from{
+        transform:
+        rotate(-25deg)
+        translateY(0);
+    }
+
+    to{
+        transform:
+        rotate(-25deg)
+        translateY(20px);
+    }
+
+}
+
+/* noise */
+
 #noise{
     position:fixed;
     inset:0;
+
     z-index:9999;
+
     pointer-events:none;
-    opacity:.05;
+
+    opacity:.06;
+
     mix-blend-mode:overlay;
 }
 
 /* bloqueio */
+
 #blocked{
     position:fixed;
     inset:0;
+
     background:#000;
+
     color:#fff;
+
+    z-index:999999;
+
     display:none;
+
     align-items:center;
     justify-content:center;
-    z-index:999999;
-    font-size:25px;
+
+    font-size:28px;
+
     text-align:center;
+
     padding:20px;
 }
 
-/* blur ao bloquear */
+/* blur */
+
 .blur{
-    filter:blur(50px);
+    filter:
+    blur(50px)
+    brightness(.3);
 }
 
-/* impedir arrasto */
+/* loading */
+
+#loading{
+
+    position:fixed;
+    inset:0;
+
+    background:#000;
+
+    z-index:9999999;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:#fff;
+
+    font-size:22px;
+}
+
 img{
     -webkit-user-drag:none;
 }
@@ -87,21 +165,24 @@ img{
 
 <body>
 
+<div id="loading">
+Carregando Ebook Seguro...
+</div>
+
 <!-- WATERMARK -->
 <div id="watermark"></div>
 
 <!-- NOISE -->
 <canvas id="noise"></canvas>
 
-<!-- BLOQUEIO -->
+<!-- BLOCK -->
 <div id="blocked">
-Conteúdo protegido
+Conteúdo Protegido
 </div>
 
 <!-- EBOOK -->
 <div id="ebook">
-
-<img src="ebook/Leitura do Preço em Opções Binárias_page-0001.jpg" class="page">
+    <img src="ebook/Leitura do Preço em Opções Binárias_page-0001.jpg" class="page">
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0002.jpg" class="page">
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0003.jpg" class="page">
 <img src="ebook/Leitura do Preço em Opções Binárias_page-0004.jpg" class="page">
@@ -124,44 +205,55 @@ Conteúdo protegido
 
 </div>
 
-<script>
+<script type="module">
 
-///////////////////////////
+//////////////////////////////////////////////////////
 // LOGIN
-///////////////////////////
+//////////////////////////////////////////////////////
 
-const user = localStorage.getItem("loggedUser");
+const user =
+localStorage.getItem("loggedUser");
 
 if(!user){
+
     location.href="index.html";
+
 }
 
-///////////////////////////
-// WATERMARK
-///////////////////////////
+//////////////////////////////////////////////////////
+// CONFIG
+//////////////////////////////////////////////////////
 
-const wm = document.getElementById("watermark");
+const TOTAL_PAGES = 20;
+
+//////////////////////////////////////////////////////
+// WATERMARK
+//////////////////////////////////////////////////////
+
+const wm =
+document.getElementById("watermark");
 
 function createMarks(){
 
     wm.innerHTML="";
 
-    for(let y=0;y<window.innerHeight;y+=180){
+    for(let y=0;y<innerHeight;y+=180){
 
-        for(let x=0;x<window.innerWidth;x+=300){
+        for(let x=0;x<innerWidth;x+=280){
 
-            const div=document.createElement("div");
+            const div =
+            document.createElement("div");
 
             div.className="mark";
 
             div.style.left=x+"px";
             div.style.top=y+"px";
 
-            div.innerText=
-            user+
-            " • "+
-            new Date().toLocaleString()+
-            " • "+
+            div.innerText =
+            user +
+            " • " +
+            new Date().toLocaleString() +
+            " • " +
             location.hostname;
 
             wm.appendChild(div);
@@ -176,28 +268,36 @@ createMarks();
 
 setInterval(createMarks,3000);
 
-///////////////////////////
-// NOISE ANTI-FOTO
-///////////////////////////
+//////////////////////////////////////////////////////
+// NOISE
+//////////////////////////////////////////////////////
 
-const noise=document.getElementById("noise");
-const nctx=noise.getContext("2d");
+const noise =
+document.getElementById("noise");
+
+const nctx =
+noise.getContext("2d");
 
 function drawNoise(){
 
     noise.width=innerWidth;
     noise.height=innerHeight;
 
-    const img=nctx.createImageData(noise.width,noise.height);
+    const img =
+    nctx.createImageData(
+        noise.width,
+        noise.height
+    );
 
     for(let i=0;i<img.data.length;i+=4){
 
-        const v=Math.random()*255;
+        const v =
+        Math.random()*255;
 
         img.data[i]=v;
         img.data[i+1]=v;
         img.data[i+2]=v;
-        img.data[i+3]=12;
+        img.data[i+3]=15;
 
     }
 
@@ -207,107 +307,154 @@ function drawNoise(){
 
 setInterval(drawNoise,120);
 
-///////////////////////////
+//////////////////////////////////////////////////////
 // BLOQUEIOS
-///////////////////////////
+//////////////////////////////////////////////////////
 
-document.addEventListener(
+[
 "contextmenu",
-e=>e.preventDefault()
-);
-
-document.addEventListener(
 "copy",
-e=>e.preventDefault()
-);
-
-document.addEventListener(
 "cut",
-e=>e.preventDefault()
-);
-
-document.addEventListener(
 "dragstart",
-e=>e.preventDefault()
-);
+"selectstart"
+]
+
+.forEach(evt=>{
+
+    document.addEventListener(
+        evt,
+        e=>e.preventDefault()
+    );
+
+});
+
+//////////////////////////////////////////////////////
+// TECLAS
+//////////////////////////////////////////////////////
 
 document.addEventListener(
-"selectstart",
-e=>e.preventDefault()
-);
-
-///////////////////////////
-// BLOQUEAR TECLAS
-///////////////////////////
-
-document.addEventListener("keydown", e=>{
+"keydown",
+async e=>{
 
     if(
+
         e.key==="F12" ||
 
-        (e.ctrlKey &&
-        ["s","u","p","c","a"].includes(
-        e.key.toLowerCase()
-        ))
+        e.key==="PrintScreen" ||
+
+        (
+            e.ctrlKey &&
+            ["s","u","p","c","a","i","j"]
+            .includes(
+                e.key.toLowerCase()
+            )
+        )
 
     ){
+
         e.preventDefault();
+
+        try{
+
+            await navigator
+            .clipboard
+            .writeText("");
+
+        }catch(err){}
+
+        lockScreen();
+
     }
 
 });
 
-///////////////////////////
-// DETECTAR DEVTOOLS
-///////////////////////////
+//////////////////////////////////////////////////////
+// DEVTOOLS
+//////////////////////////////////////////////////////
 
 setInterval(()=>{
 
-    if(
-        window.outerWidth-window.innerWidth>160 ||
-        window.outerHeight-window.innerHeight>160
-    ){
+    const width =
+    window.outerWidth -
+    window.innerWidth > 160;
+
+    const height =
+    window.outerHeight -
+    window.innerHeight > 160;
+
+    if(width || height){
+
         lockScreen();
+
     }
 
 },1000);
 
-///////////////////////////
-// TROCA DE ABA
-///////////////////////////
+//////////////////////////////////////////////////////
+// TROCA ABA
+//////////////////////////////////////////////////////
 
 document.addEventListener(
 "visibilitychange",
 ()=>{
 
     if(document.hidden){
+
         lockScreen();
+
     }
 
 });
 
-///////////////////////////
-// MOBILE MULTI TOUCH
-///////////////////////////
+//////////////////////////////////////////////////////
+// BLUR
+//////////////////////////////////////////////////////
+
+window.addEventListener(
+"blur",
+()=>{
+
+    document
+    .getElementById("ebook")
+    .classList.add("blur");
+
+});
+
+window.addEventListener(
+"focus",
+()=>{
+
+    document
+    .getElementById("ebook")
+    .classList.remove("blur");
+
+});
+
+//////////////////////////////////////////////////////
+// TOUCH
+//////////////////////////////////////////////////////
 
 document.addEventListener(
 "touchstart",
 e=>{
 
     if(e.touches.length>2){
+
         lockScreen();
+
     }
 
 });
 
-///////////////////////////
+//////////////////////////////////////////////////////
 // PRINT
-///////////////////////////
+//////////////////////////////////////////////////////
 
 window.onbeforeprint=()=>false;
 
-///////////////////////////
+//////////////////////////////////////////////////////
 // LOCK
-///////////////////////////
+//////////////////////////////////////////////////////
 
 function lockScreen(){
 
@@ -321,7 +468,244 @@ function lockScreen(){
 
 }
 
+//////////////////////////////////////////////////////
+// XOR DECRYPT
+//////////////////////////////////////////////////////
+
+function decrypt(buffer){
+
+    const arr =
+    new Uint8Array(buffer);
+
+    const key = 123;
+
+    for(let i=0;i<arr.length;i++){
+
+        arr[i] ^= key;
+
+    }
+
+    return arr;
+
+}
+
+//////////////////////////////////////////////////////
+// LOAD PAGE
+//////////////////////////////////////////////////////
+
+async function loadPage(page){
+
+    //////////////////////////////////////////////////
+    // fragmentos
+    //////////////////////////////////////////////////
+
+    const fragments = [
+
+        `ebook/page-${page}/1.bin`,
+        `ebook/page-${page}/2.bin`,
+        `ebook/page-${page}/3.bin`,
+        `ebook/page-${page}/4.bin`
+
+    ];
+
+    const blobs = [];
+
+    //////////////////////////////////////////////////
+    // carregar
+    //////////////////////////////////////////////////
+
+    for(const frag of fragments){
+
+        const res =
+        await fetch(frag);
+
+        const encrypted =
+        await res.arrayBuffer();
+
+        const decrypted =
+        decrypt(encrypted);
+
+        const blob =
+        new Blob([decrypted]);
+
+        blobs.push(
+            URL.createObjectURL(blob)
+        );
+
+    }
+
+    //////////////////////////////////////////////////
+    // canvas
+    //////////////////////////////////////////////////
+
+    const canvas =
+    document.createElement("canvas");
+
+    canvas.className="pageCanvas";
+
+    const ctx =
+    canvas.getContext("2d");
+
+    const images = [];
+
+    for(const src of blobs){
+
+        const img = new Image();
+
+        img.src = src;
+
+        await new Promise(
+            r=>img.onload=r
+        );
+
+        images.push(img);
+
+    }
+
+    const w =
+    images[0].width;
+
+    const h =
+    images[0].height;
+
+    canvas.width = w*2;
+    canvas.height = h*2;
+
+    //////////////////////////////////////////////////
+    // montar
+    //////////////////////////////////////////////////
+
+    ctx.drawImage(images[0],0,0);
+    ctx.drawImage(images[1],w,0);
+    ctx.drawImage(images[2],0,h);
+    ctx.drawImage(images[3],w,h);
+
+    //////////////////////////////////////////////////
+    // anti OCR
+    //////////////////////////////////////////////////
+
+    for(let i=0;i<6000;i++){
+
+        ctx.fillStyle=
+        `rgba(255,255,255,${
+            Math.random()*0.02
+        })`;
+
+        ctx.fillRect(
+
+            Math.random()*canvas.width,
+            Math.random()*canvas.height,
+
+            1,
+            1
+
+        );
+
+    }
+
+    document
+    .getElementById("ebook")
+    .appendChild(canvas);
+
+}
+
+//////////////////////////////////////////////////////
+// INIT
+//////////////////////////////////////////////////////
+
+async function init(){
+
+    for(let i=1;i<=TOTAL_PAGES;i++){
+
+        await loadPage(i);
+
+    }
+
+    document
+    .getElementById("loading")
+    .style.display="none";
+
+}
+
+init();
+
+//////////////////////////////////////////////////////
+// ANTI DEBUG
+//////////////////////////////////////////////////////
+
+(function(){
+
+    function detect(){
+
+        const start =
+        performance.now();
+
+        debugger;
+
+        const end =
+        performance.now();
+
+        if(end-start>100){
+
+            lockScreen();
+
+        }
+
+    }
+
+    setInterval(detect,1000);
+
+})();
+
+//////////////////////////////////////////////////////
+// DESABILITAR CACHE
+//////////////////////////////////////////////////////
+
+if('caches' in window){
+
+    caches.keys().then(names=>{
+
+        names.forEach(name=>{
+
+            caches.delete(name);
+
+        });
+
+    });
+
+}
+
+//////////////////////////////////////////////////////
+// ANTI INSPECIONAR
+//////////////////////////////////////////////////////
+
+document.addEventListener(
+"inspect",
+()=>lockScreen()
+);
+
+//////////////////////////////////////////////////////
+// RANDOM WATERMARK MOVEMENT
+//////////////////////////////////////////////////////
+
+setInterval(()=>{
+
+    document
+    .querySelectorAll(".mark")
+    .forEach(el=>{
+
+        el.style.transform =
+        `
+        rotate(${Math.random()*8-4}deg)
+        translateY(${Math.random()*20}px)
+        `;
+
+    });
+
+},500);
+
 </script>
 
 </body>
 </html>
+
