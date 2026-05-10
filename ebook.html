@@ -4,122 +4,362 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ebook</title>
+<title>Protected Ebook</title>
 
 <style>
 
-body{
-  margin:0;
-  background:#0f172a;
-  font-family:Arial;
-  text-align:center;
-  overflow-x:hidden;
-  user-select:none;
+html,body{
+    margin:0;
+    background:#000;
+    overflow:hidden;
+    user-select:none;
+    touch-action:none;
+    font-family:Arial;
 }
 
-.page{
-  width:100%;
-  max-width:900px;
-  margin:20px auto;
-  display:block;
-  pointer-events:none;
-  border-radius:10px;
+/* Canvas protegido */
+#viewer{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:#000;
 }
 
-.watermark{
-  position:fixed;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%) rotate(-30deg);
-  font-size:40px;
-  color:rgba(255,255,255,0.08);
-  z-index:9999;
-  pointer-events:none;
+/* Watermark dinâmica */
+#watermark{
+    position:fixed;
+    inset:0;
+    z-index:99999;
+    pointer-events:none;
+    overflow:hidden;
+}
+
+.mark{
+    position:absolute;
+    color:rgba(255,255,255,.06);
+    font-size:22px;
+    transform:rotate(-25deg);
+    white-space:nowrap;
+}
+
+/* Overlay anti-foto */
+#noise{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    pointer-events:none;
+    opacity:.05;
+    mix-blend-mode:overlay;
+}
+
+/* Bloqueio */
+#blocked{
+    position:fixed;
+    inset:0;
+    background:#000;
+    color:#fff;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:999999;
+    font-size:22px;
 }
 
 </style>
 </head>
-
 <body>
 
-<div class="watermark" id="watermark"></div>
+<canvas id="viewer"></canvas>
+<canvas id="noise"></canvas>
 
+<div id="watermark"></div>
+
+<div id="blocked">
+Conteúdo protegido
   <img src="ebook/Leitura do Preço em Opções Binárias_page-0001.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0002.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0003.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0004.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0005.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0006.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0007.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0008.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0009.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0010.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0011.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0012.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0013.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0014.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0015.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0016.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0017.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0018.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0019.jpg" class="page">
-  <img src="ebook/Leitura do Preço em Opções Binárias_page-0020.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0002.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0003.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0004.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0005.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0006.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0007.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0008.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0009.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0010.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0011.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0012.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0013.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0014.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0015.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0016.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0017.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0018.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0019.jpg" class="page">
+<img src="ebook/Leitura do Preço em Opções Binárias_page-0020.jpg" class="page">
+</div>
 
 <script>
 
-// VERIFICAR LOGIN
+//////////////////////////////
+// LOGIN
+//////////////////////////////
+
 const user = localStorage.getItem("loggedUser");
 
 if(!user){
-  window.location.href = "login.html";
+    location.href="login.html";
 }
 
-// MOSTRAR NOME
-document.getElementById("welcome").innerText =
-"Ebook de " + user;
+//////////////////////////////
+// WATERMARK DINÂMICA
+//////////////////////////////
 
-// MARCA D'ÁGUA
-document.getElementById("watermark").innerText =
-"PROTEGIDO • " + user;
+const wm = document.getElementById("watermark");
 
-// SAIR
-function logout(){
-  localStorage.removeItem("loggedUser");
-  window.location.href = "login.html";
+function createMarks(){
+
+    wm.innerHTML="";
+
+    for(let y=0;y<window.innerHeight;y+=180){
+
+        for(let x=0;x<window.innerWidth;x+=300){
+
+            const div=document.createElement("div");
+
+            div.className="mark";
+
+            div.style.left=x+"px";
+            div.style.top=y+"px";
+
+            div.innerText=
+            user+
+            " • "+
+            new Date().toLocaleTimeString()+
+            " • "+
+            location.hostname;
+
+            wm.appendChild(div);
+
+        }
+
+    }
+
 }
 
-// BLOQUEAR CLIQUE DIREITO
-document.addEventListener("contextmenu", e => e.preventDefault());
+createMarks();
 
-// BLOQUEAR TECLAS
-document.addEventListener("keydown", e => {
+//////////////////////////////
+// NOISE ANTI-FOTO
+//////////////////////////////
 
-  // F12
-  if(e.key === "F12"){
-    e.preventDefault();
-  }
+const noise=document.getElementById("noise");
+const nctx=noise.getContext("2d");
 
-  // CTRL + atalhos
-  if(
-    e.ctrlKey &&
-    ["s","u","p","c"].includes(e.key.toLowerCase())
-  ){
-    e.preventDefault();
-  }
+function drawNoise(){
+
+    noise.width=innerWidth;
+    noise.height=innerHeight;
+
+    const img=nctx.createImageData(noise.width,noise.height);
+
+    for(let i=0;i<img.data.length;i+=4){
+
+        const v=Math.random()*255;
+
+        img.data[i]=v;
+        img.data[i+1]=v;
+        img.data[i+2]=v;
+        img.data[i+3]=15;
+
+    }
+
+    nctx.putImageData(img,0,0);
+
+}
+
+setInterval(drawNoise,120);
+
+//////////////////////////////
+// CANVAS PROTEGIDO
+//////////////////////////////
+
+const canvas=document.getElementById("viewer");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+const pages=[];
+
+for(let i=1;i<=20;i++){
+
+    const img=new Image();
+
+    img.src=
+    `secure/page-${String(i).padStart(4,'0')}.webp`;
+
+    pages.push(img);
+
+}
+
+let current=0;
+
+function render(){
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    const img=pages[current];
+
+    if(!img.complete)return;
+
+    const ratio=Math.min(
+        canvas.width/img.width,
+        canvas.height/img.height
+    );
+
+    const w=img.width*ratio;
+    const h=img.height*ratio;
+
+    ctx.drawImage(
+        img,
+        (canvas.width-w)/2,
+        (canvas.height-h)/2,
+        w,
+        h
+    );
+
+}
+
+pages.forEach(img=>{
+    img.onload=render;
+});
+
+//////////////////////////////
+// NAVEGAÇÃO
+//////////////////////////////
+
+window.addEventListener("wheel",e=>{
+
+    if(e.deltaY>0){
+        current=Math.min(current+1,pages.length-1);
+    }else{
+        current=Math.max(current-1,0);
+    }
+
+    render();
 
 });
 
-// DETECTAR DEVTOOLS
-setInterval(() => {
+//////////////////////////////
+// BLOQUEIOS
+//////////////////////////////
 
-  if(
-    window.outerWidth - window.innerWidth > 160 ||
-    window.outerHeight - window.innerHeight > 160
-  ){
-    document.body.innerHTML = "";
-  }
+document.addEventListener(
+"contextmenu",
+e=>e.preventDefault()
+);
+
+document.addEventListener(
+"dragstart",
+e=>e.preventDefault()
+);
+
+document.addEventListener(
+"copy",
+e=>e.preventDefault()
+);
+
+document.addEventListener(
+"keydown",
+e=>{
+
+    if(
+        e.key==="F12" ||
+        (e.ctrlKey &&
+        ["s","u","p","c","a"].includes(
+        e.key.toLowerCase()))
+    ){
+        e.preventDefault();
+    }
+
+});
+
+//////////////////////////////
+// DETECTAR DEVTOOLS
+//////////////////////////////
+
+setInterval(()=>{
+
+    if(
+        window.outerWidth-window.innerWidth>150 ||
+        window.outerHeight-window.innerHeight>150
+    ){
+
+        lock();
+
+    }
 
 },1000);
+
+//////////////////////////////
+// DETECTAR TROCA DE ABA
+//////////////////////////////
+
+document.addEventListener(
+"visibilitychange",
+()=>{
+
+    if(document.hidden){
+        lock();
+    }
+
+});
+
+//////////////////////////////
+// BLOQUEAR TELA
+//////////////////////////////
+
+function lock(){
+
+    document.getElementById(
+    "blocked").style.display="flex";
+
+    canvas.style.filter="blur(80px)";
+
+}
+
+//////////////////////////////
+// MOBILE
+//////////////////////////////
+
+document.addEventListener(
+"touchstart",
+e=>{
+
+    if(e.touches.length>2){
+        lock();
+    }
+
+});
+
+//////////////////////////////
+// AUTO REFRESH WATERMARK
+//////////////////////////////
+
+setInterval(createMarks,3000);
+
+//////////////////////////////
+// DESATIVAR SELEÇÃO
+//////////////////////////////
+
+window.onselectstart=()=>false;
+
+//////////////////////////////
+// DESATIVAR PRINT
+//////////////////////////////
+
+window.onbeforeprint=()=>false;
 
 </script>
 
