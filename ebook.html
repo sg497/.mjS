@@ -303,142 +303,100 @@ p{
 
 <script>
 
-//////////////////////////////////////////////////////
-// LOGIN
-//////////////////////////////////////////////////////
-
-const user =
-localStorage.getItem(
-  "loggedUser"
-);
+const user = localStorage.getItem("loggedUser");
 
 if(!user){
-
-  window.location.href =
-  "login.html";
-
+  window.location.href = "login.html";
 }
 
-document.getElementById(
-  "welcomeText"
-).innerText =
-"Bem-vindo, " + user;
+document.getElementById("welcomeText").innerText = "Bem-vindo, " + user;
 
-//////////////////////////////////////////////////////
-// ENTRAR
-//////////////////////////////////////////////////////
-
-function entrar(){
-
-  window.location.href =
-  "bienviu.html";
-
-}
-
-//////////////////////////////////////////////////////
-// LOGOUT
-//////////////////////////////////////////////////////
+/* =========================
+   LOGOUT
+========================= */
 
 function logout(){
-
-  localStorage.removeItem(
-    "loggedUser"
-  );
-
+  localStorage.removeItem("loggedUser");
   sessionStorage.clear();
-
-  window.location.href =
-  "index.html";
-
+  window.location.href = "index.html";
 }
 
-//////////////////////////////////////////////////////
-// AUTO LOGOUT
-//////////////////////////////////////////////////////
+/* =========================
+   TIMER DE SESSÃO
+========================= */
 
-const SESSION_TIME =
-5 * 60;
+const SESSION_TIME = 5 * 60; // 5 minutos
+let timeLeft = SESSION_TIME;
 
-let timeLeft =
-SESSION_TIME;
+const timerEl = document.getElementById("sessionTimer");
 
-const timer =
-document.getElementById(
-  "sessionTimer"
-);
+// evita resets excessivos
+let lastActivity = Date.now();
 
-//////////////////////////////////////////////////////
-// TIMER
-//////////////////////////////////////////////////////
-
+/* atualiza UI */
 function updateTimer(){
+  const min = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const sec = String(timeLeft % 60).padStart(2, "0");
 
-  const min =
-  String(
-    Math.floor(timeLeft / 60)
-  ).padStart(2,"0");
-
-  const sec =
-  String(
-    timeLeft % 60
-  ).padStart(2,"0");
-
-  timer.innerText =
-  `Sessão expira em: ${min}:${sec}`;
-
+  timerEl.innerText = `Sessão expira em: ${min}:${sec}`;
 }
 
 updateTimer();
 
-//////////////////////////////////////////////////////
-// CONTAGEM
-//////////////////////////////////////////////////////
+/* =========================
+   COUNTDOWN REAL
+========================= */
 
-setInterval(()=>{
+const countdown = setInterval(() => {
 
   timeLeft--;
 
-  updateTimer();
-
   if(timeLeft <= 0){
-
-    alert(
-      "Sessão encerrada por inatividade."
-    );
-
+    clearInterval(countdown);
     logout();
-
+    return;
   }
 
-},1000);
+  updateTimer();
 
-//////////////////////////////////////////////////////
-// RESETAR
-//////////////////////////////////////////////////////
+}, 1000);
+
+/* =========================
+   RESET INATIVIDADE (FIXADO)
+========================= */
 
 function resetSession(){
 
-  timeLeft =
-  SESSION_TIME;
+  const now = Date.now();
 
+  // evita múltiplos triggers ao mesmo tempo
+  if(now - lastActivity < 800) return;
+
+  lastActivity = now;
+
+  timeLeft = SESSION_TIME;
+
+  updateTimer();
 }
 
+/* eventos reais de uso */
 [
   "click",
   "mousemove",
   "keydown",
   "scroll",
   "touchstart"
-]
-
-.forEach(evt=>{
-
-  document.addEventListener(
-    evt,
-    resetSession
-  );
-
+].forEach(evt => {
+  document.addEventListener(evt, resetSession, { passive: true });
 });
+
+/* =========================
+   BOTÕES
+========================= */
+
+function entrar(){
+  window.location.href = "bienviu.html";
+}
 
 </script>
 
