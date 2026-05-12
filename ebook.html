@@ -10,18 +10,12 @@
 body{
   margin:0;
   font-family:"Segoe UI",sans-serif;
-  background:
-  linear-gradient(
-    135deg,
-    #020617,
-    #0f172a
-  );
-
+  background:linear-gradient(135deg,#020617,#0f172a);
   color:white;
   overflow-x:hidden;
 }
 
-/* fundo */
+/* FUNDO */
 
 .bg{
   position:fixed;
@@ -29,22 +23,14 @@ body{
   height:100%;
 
   background:
-  radial-gradient(
-    circle at 20% 30%,
-    #38bdf8,
-    transparent
-  ),
-  radial-gradient(
-    circle at 80% 70%,
-    #22c55e,
-    transparent
-  );
+  radial-gradient(circle at 20% 30%,#38bdf8,transparent),
+  radial-gradient(circle at 80% 70%,#22c55e,transparent);
 
   opacity:.15;
   z-index:0;
 }
 
-/* topo */
+/* TOPO */
 
 .topbar{
 
@@ -52,9 +38,10 @@ body{
 
   top:0;
   left:0;
-  right:0;
 
-  z-index:10;
+  width:100%;
+
+  z-index:999999;
 
   display:flex;
 
@@ -63,26 +50,33 @@ body{
 
   padding:15px 20px;
 
+  box-sizing:border-box;
+
   background:
-  rgba(0,0,0,.25);
+  rgba(0,0,0,.75);
 
   backdrop-filter:blur(10px);
 
   border-bottom:
-  1px solid rgba(255,255,255,.08);
+  1px solid rgba(255,255,255,.1);
 
 }
 
-/* timer */
+/* TIMER */
 
 #sessionTimer{
+
+  color:#fff;
+
   font-size:14px;
-  opacity:.8;
+
+  font-weight:600;
+
 }
 
-/* logout */
+/* BOTÃO LOGOUT */
 
-.logoutBtn{
+#logoutBtn{
 
   background:
   linear-gradient(
@@ -95,7 +89,7 @@ body{
 
   color:white;
 
-  padding:10px 16px;
+  padding:12px 18px;
 
   border-radius:10px;
 
@@ -103,15 +97,22 @@ body{
 
   font-weight:bold;
 
+  font-size:14px;
+
   transition:.3s;
 
+  box-shadow:
+  0 0 20px rgba(255,0,0,.25);
+
 }
 
-.logoutBtn:hover{
+#logoutBtn:hover{
+
   transform:scale(1.05);
+
 }
 
-/* container */
+/* CONTAINER */
 
 .container{
   position:relative;
@@ -119,13 +120,13 @@ body{
 
   text-align:center;
 
-  padding:120px 20px 40px;
+  padding:140px 20px 40px;
 
   max-width:900px;
   margin:auto;
 }
 
-/* título */
+/* TÍTULO */
 
 h1{
   font-size:42px;
@@ -137,7 +138,7 @@ p{
   margin-bottom:30px;
 }
 
-/* botão principal */
+/* BOTÃO PRINCIPAL */
 
 .mainBtn{
 
@@ -173,7 +174,7 @@ p{
   transform:scale(1.05);
 }
 
-/* cards */
+/* CARDS */
 
 .stats{
   display:flex;
@@ -207,7 +208,7 @@ p{
   color:#22c55e;
 }
 
-/* responsivo */
+/* RESPONSIVO */
 
 @media(max-width:768px){
 
@@ -254,10 +255,7 @@ p{
     Sessão expira em: 05:00
   </div>
 
-  <button
-    class="logoutBtn"
-    onclick="logout()"
-  >
+  <button id="logoutBtn" onclick="logout()">
     Terminar Sessão
   </button>
 
@@ -327,7 +325,7 @@ document.getElementById(
 "Bem-vindo, " + user;
 
 //////////////////////////////////////////////////////
-// ABRIR EBOOK
+// ENTRAR
 //////////////////////////////////////////////////////
 
 function entrar(){
@@ -360,7 +358,6 @@ function logout(){
 
 const SESSION_TIME =
 5 * 60;
-// 5 minutos
 
 let timeLeft =
 SESSION_TIME;
@@ -371,7 +368,7 @@ document.getElementById(
 );
 
 //////////////////////////////////////////////////////
-// FORMATAR TEMPO
+// TIMER
 //////////////////////////////////////////////////////
 
 function updateTimer(){
@@ -416,7 +413,7 @@ setInterval(()=>{
 },1000);
 
 //////////////////////////////////////////////////////
-// RESETAR INATIVIDADE
+// RESETAR
 //////////////////////////////////////////////////////
 
 function resetSession(){
