@@ -122,7 +122,6 @@ button:hover {
 
     <button onclick="activateEbook()">Ativar Ebook</button>
     <button onclick="deactivateEbook()">Desativar Ebook</button>
-    <button onclick="deleteEbook()">Remover Ebook (simulado)</button>
 
     <hr>
 
@@ -152,8 +151,6 @@ button:hover {
 
 <script>
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
 /* =========================
    NAV
 ========================= */
@@ -165,6 +162,8 @@ function showSection(section) {
 /* =========================
    USERS
 ========================= */
+let users = JSON.parse(localStorage.getItem("users")) || [];
+
 function addUser() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
@@ -202,16 +201,18 @@ function renderUsers() {
 renderUsers();
 
 /* =========================
-   EBOOK CONTROL (SIMULADO)
+   EBOOK CONTROL REAL
 ========================= */
 
-let ebookActive = true;
+function isEbookActive(){
+  return localStorage.getItem("ebookActive") === "1";
+}
 
 function updateStatus(){
   const status = document.getElementById("statusText");
   const dashStatus = document.getElementById("ebookStatus");
 
-  if(ebookActive){
+  if(isEbookActive()){
     status.innerText = "ATIVO";
     status.className = "status-ok";
     dashStatus.innerText = "Ativo";
@@ -223,25 +224,15 @@ function updateStatus(){
 }
 
 function activateEbook(){
-  ebookActive = true;
+  localStorage.setItem("ebookActive", "1");
   updateStatus();
-  alert("Ebook ativado (simulado)");
+  alert("Ebook ativado");
 }
 
 function deactivateEbook(){
-  ebookActive = false;
+  localStorage.setItem("ebookActive", "0");
   updateStatus();
-  alert("Ebook desativado (simulado)");
-}
-
-function deleteEbook(){
-  const confirmDelete = confirm("Tem certeza que quer REMOVER o ebook?");
-  
-  if(confirmDelete){
-    ebookActive = false;
-    updateStatus();
-    alert("Ebook removido (simulado). Precisas backend para apagar /ebook");
-  }
+  alert("Ebook desativado");
 }
 
 updateStatus();
