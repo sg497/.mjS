@@ -35,7 +35,7 @@ body {
   opacity: 1;
 }
 
-/* Conteúdo */
+/* Main */
 .main {
   flex: 1;
   padding: 30px;
@@ -80,6 +80,17 @@ button:hover {
   color: red;
   cursor: pointer;
 }
+
+/* STATUS EBOOK */
+.status-ok {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.status-off {
+  color: #ef4444;
+  font-weight: bold;
+}
 </style>
 </head>
 
@@ -88,26 +99,45 @@ button:hover {
 <div class="sidebar">
   <h2>📘 Admin</h2>
   <div class="menu-item" onclick="showSection('dashboard')">Dashboard</div>
-  <div class="menu-item" onclick="showSection('upload')">Upload Ebook</div>
+  <div class="menu-item" onclick="showSection('ebook')">Ebook Manager</div>
   <div class="menu-item" onclick="showSection('users')">Usuários</div>
 </div>
 
 <div class="main">
 
-  <!-- Dashboard -->
+  <!-- DASHBOARD -->
   <div id="dashboard" class="card">
     <h2>📊 Visão geral</h2>
     <p>Total de usuários: <span id="totalUsers">0</span></p>
+    <p>Status do Ebook: <span id="ebookStatus">Ativo</span></p>
   </div>
 
-  <!-- Upload -->
-  <div id="upload" class="card" style="display:none;">
-    <h2>📤 Upload do Ebook</h2>
-    <input type="file">
-    <button onclick="alert('Upload simulado')">Enviar</button>
+  <!-- EBOOK MANAGER -->
+  <div id="ebook" class="card" style="display:none;">
+    <h2>📚 Gerir Ebook (pasta /ebook)</h2>
+
+    <p>Status atual:
+      <span id="statusText" class="status-ok">ATIVO</span>
+    </p>
+
+    <button onclick="activateEbook()">Ativar Ebook</button>
+    <button onclick="deactivateEbook()">Desativar Ebook</button>
+    <button onclick="deleteEbook()">Remover Ebook (simulado)</button>
+
+    <hr>
+
+    <h3>Upload novo conteúdo</h3>
+    <input type="file" multiple>
+    <button onclick="alert('Upload simulado (precisa backend)')">
+      Enviar ficheiros
+    </button>
+
+    <p style="opacity:.6;margin-top:10px;">
+      📁 Pasta atual: /ebook (20 imagens)
+    </p>
   </div>
 
-  <!-- Usuários -->
+  <!-- USERS -->
   <div id="users" class="card" style="display:none;">
     <h2>👥 Gerenciar Usuários</h2>
 
@@ -121,13 +151,20 @@ button:hover {
 </div>
 
 <script>
+
 let users = JSON.parse(localStorage.getItem("users")) || [];
 
+/* =========================
+   NAV
+========================= */
 function showSection(section) {
   document.querySelectorAll(".card").forEach(c => c.style.display = "none");
   document.getElementById(section).style.display = "block";
 }
 
+/* =========================
+   USERS
+========================= */
 function addUser() {
   const username = document.getElementById("username").value;
   const password = document.getElementById("password").value;
@@ -163,6 +200,52 @@ function renderUsers() {
 }
 
 renderUsers();
+
+/* =========================
+   EBOOK CONTROL (SIMULADO)
+========================= */
+
+let ebookActive = true;
+
+function updateStatus(){
+  const status = document.getElementById("statusText");
+  const dashStatus = document.getElementById("ebookStatus");
+
+  if(ebookActive){
+    status.innerText = "ATIVO";
+    status.className = "status-ok";
+    dashStatus.innerText = "Ativo";
+  } else {
+    status.innerText = "DESATIVADO";
+    status.className = "status-off";
+    dashStatus.innerText = "Desativado";
+  }
+}
+
+function activateEbook(){
+  ebookActive = true;
+  updateStatus();
+  alert("Ebook ativado (simulado)");
+}
+
+function deactivateEbook(){
+  ebookActive = false;
+  updateStatus();
+  alert("Ebook desativado (simulado)");
+}
+
+function deleteEbook(){
+  const confirmDelete = confirm("Tem certeza que quer REMOVER o ebook?");
+  
+  if(confirmDelete){
+    ebookActive = false;
+    updateStatus();
+    alert("Ebook removido (simulado). Precisas backend para apagar /ebook");
+  }
+}
+
+updateStatus();
+
 </script>
 
 </body>
