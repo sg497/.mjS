@@ -3,244 +3,127 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>Ebook Ultra Protegido</title>
 
 <style>
-
-html,
-body{
-
+html, body{
     margin:0;
     padding:0;
-
     background:#000;
-
     overflow-x:hidden;
-
     font-family:Arial,sans-serif;
-
     user-select:none;
     -webkit-user-select:none;
     -moz-user-select:none;
-
     -webkit-touch-callout:none;
-
     overscroll-behavior:none;
-
     touch-action:none;
-
 }
 
 /* ebook */
-
 #ebook{
-
     position:relative;
-
     z-index:2;
-
     padding:20px 0 80px;
-
 }
 
 /* páginas */
-
 .page{
-
     width:100%;
-
     max-width:900px;
-
     display:block;
-
     margin:20px auto;
-
     border-radius:12px;
-
     pointer-events:none;
-
     -webkit-user-drag:none;
-
-    box-shadow:
-    0 0 30px rgba(0,0,0,.6);
-
+    box-shadow:0 0 30px rgba(0,0,0,.6);
     opacity:0;
-
     transform:translateY(20px);
-
     transition:.5s;
-
 }
-
 .page.loaded{
-
     opacity:1;
-
     transform:translateY(0);
-
 }
 
 /* watermark */
-
 #watermark{
-
     position:fixed;
-
     inset:0;
-
     z-index:99999;
-
     pointer-events:none;
-
     overflow:hidden;
-
 }
-
 .mark{
-
     position:absolute;
-
     color:rgba(255,0,0,.10);
-
     font-size:28px;
-
     font-weight:bold;
-
     white-space:nowrap;
-
     transform:rotate(-25deg);
-
     mix-blend-mode:difference;
-
     animation:float 8s infinite alternate;
-
 }
-
 @keyframes float{
-
-    from{
-
-        transform:
-        rotate(-25deg)
-        translateY(0px);
-
-    }
-
-    to{
-
-        transform:
-        rotate(-25deg)
-        translateY(20px);
-
-    }
-
+    from{ transform: rotate(-25deg) translateY(0px); }
+    to{ transform: rotate(-25deg) translateY(20px); }
 }
 
 /* noise */
-
 #noise{
-
     position:fixed;
-
     inset:0;
-
     z-index:9999;
-
     pointer-events:none;
-
     opacity:.05;
-
     mix-blend-mode:overlay;
-
 }
 
 /* loading */
-
 #loading{
-
     position:fixed;
-
     inset:0;
-
     background:#000;
-
     z-index:9999999;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     color:#fff;
-
     font-size:22px;
-
 }
 
 /* bloqueio */
-
 #blocked{
-
     position:fixed;
-
     inset:0;
-
     background:#000;
-
     color:#fff;
-
     z-index:99999999;
-
     display:none;
-
     align-items:center;
-
     justify-content:center;
-
     text-align:center;
-
     font-size:28px;
-
     padding:20px;
-
 }
 
 /* blur forte */
-
 .blur{
-
-    filter:
-    blur(80px)
-    brightness(.15);
-
+    filter: blur(80px) brightness(.15);
     transform:scale(1.08);
-
     transition:.08s;
-
 }
 
 /* ios screenshot */
-
 .screenshot-protect{
-
     opacity:.02 !important;
-
-    filter:
-    blur(120px)
-    brightness(0);
-
+    filter: blur(120px) brightness(0);
 }
 
 /* impedir highlight */
-
 *{
-
     -webkit-tap-highlight-color:transparent;
-
 }
-
 </style>
 </head>
 
@@ -261,77 +144,50 @@ Conteúdo Protegido
 <div id="ebook"></div>
 
 <script>
-
 ////////////////////////////////////////////////////////
 // LOGIN
 ////////////////////////////////////////////////////////
-
-const user =
-localStorage.getItem(
-    "loggedUser"
-);
-
+const user = localStorage.getItem("loggedUser");
 if(!user){
+    location.href = "index.html";
+}
 
-    location.href =
-    "index.html";
-
+////////////////////////////////////////////////////////
+// BLOQUEIO ADMINISTRATIVO
+////////////////////////////////////////////////////////
+const ebookActive = localStorage.getItem("ebookActive");
+const ebook = document.getElementById("ebook");
+if(ebookActive !== "1") {
+    const blocked = document.getElementById("blocked");
+    blocked.style.display = "flex";
+    ebook.classList.add("blur", "screenshot-protect");
+    setTimeout(() => {
+        alert("O ebook foi desativado pelo administrador.");
+        location.href = "index.html";
+    }, 3000);
 }
 
 ////////////////////////////////////////////////////////
 // CONFIG
 ////////////////////////////////////////////////////////
-
 const TOTAL_PAGES = 20;
-
-const ebook =
-document.getElementById(
-    "ebook"
-);
 
 ////////////////////////////////////////////////////////
 // GERAR PÁGINAS
 ////////////////////////////////////////////////////////
-
-function pageName(i){
-
-    return String(i)
-    .padStart(4,"0");
-
-}
+function pageName(i){ return String(i).padStart(4,"0"); }
 
 async function loadPages(){
-
     for(let i=1;i<=TOTAL_PAGES;i++){
-
-        const img =
-        document.createElement("img");
-
+        const img = document.createElement("img");
         img.className="page";
-
         img.draggable=false;
-
         img.loading="lazy";
-
-        img.src=
-        `ebook/Leitura do Preço em Opções Binárias_page-${pageName(i)}.jpg`;
-
-        img.onload=()=>{
-
-            img.classList.add(
-                "loaded"
-            );
-
-        };
-
+        img.src=`ebook/Leitura do Preço em Opções Binárias_page-${pageName(i)}.jpg`;
+        img.onload=()=>{ img.classList.add("loaded"); };
         ebook.appendChild(img);
-
     }
-
-    document
-    .getElementById("loading")
-    .style.display="none";
-
+    document.getElementById("loading").style.display="none";
 }
 
 loadPages();
@@ -339,451 +195,164 @@ loadPages();
 ////////////////////////////////////////////////////////
 // WATERMARK
 ////////////////////////////////////////////////////////
-
-const wm =
-document.getElementById(
-    "watermark"
-);
-
+const wm = document.getElementById("watermark");
 function createMarks(){
-
     wm.innerHTML="";
-
     for(let y=0;y<innerHeight;y+=180){
-
         for(let x=0;x<innerWidth;x+=260){
-
-            const div =
-            document.createElement(
-                "div"
-            );
-
+            const div = document.createElement("div");
             div.className="mark";
-
-            div.style.left=
-            x+"px";
-
-            div.style.top=
-            y+"px";
-
-            div.innerText=
-            `${user} • ${location.hostname} • ${new Date().toLocaleString()}`;
-
+            div.style.left= x+"px";
+            div.style.top= y+"px";
+            div.innerText= `${user} • ${location.hostname} • ${new Date().toLocaleString()}`;
             wm.appendChild(div);
-
         }
-
     }
-
 }
-
 createMarks();
-
-window.addEventListener(
-    "resize",
-    createMarks
-);
-
-setInterval(
-    createMarks,
-    4000
-);
-
-////////////////////////////////////////////////////////
-// WATERMARK MOVIMENTO
-////////////////////////////////////////////////////////
+window.addEventListener("resize", createMarks);
+setInterval(createMarks, 4000);
 
 setInterval(()=>{
-
-    document
-    .querySelectorAll(".mark")
-    .forEach(el=>{
-
-        el.style.transform=
-        `
-        rotate(${Math.random()*8-4}deg)
-        translateY(${Math.random()*20}px)
-        `;
-
+    document.querySelectorAll(".mark").forEach(el=>{
+        el.style.transform = `rotate(${Math.random()*8-4}deg) translateY(${Math.random()*20}px)`;
     });
-
 },700);
 
 ////////////////////////////////////////////////////////
 // NOISE
 ////////////////////////////////////////////////////////
-
-const noise =
-document.getElementById(
-    "noise"
-);
-
-const nctx =
-noise.getContext("2d");
+const noise = document.getElementById("noise");
+const nctx = noise.getContext("2d");
 
 function drawNoise(){
-
-    noise.width=
-    innerWidth;
-
-    noise.height=
-    innerHeight;
-
-    const img =
-    nctx.createImageData(
-        noise.width,
-        noise.height
-    );
-
+    noise.width = innerWidth;
+    noise.height = innerHeight;
+    const img = nctx.createImageData(noise.width, noise.height);
     for(let i=0;i<img.data.length;i+=4){
-
-        const v =
-        Math.random()*255;
-
-        img.data[i]=v;
-        img.data[i+1]=v;
-        img.data[i+2]=v;
-        img.data[i+3]=12;
-
+        const v = Math.random()*255;
+        img.data[i]=v; img.data[i+1]=v; img.data[i+2]=v; img.data[i+3]=12;
     }
-
-    nctx.putImageData(
-        img,
-        0,
-        0
-    );
-
+    nctx.putImageData(img,0,0);
 }
-
 drawNoise();
-
-setInterval(
-    drawNoise,
-    150
-);
+setInterval(drawNoise,150);
 
 ////////////////////////////////////////////////////////
 // BLOQUEIOS
 ////////////////////////////////////////////////////////
-
-[
-"contextmenu",
-"copy",
-"cut",
-"paste",
-"dragstart",
-"selectstart"
-]
-
-.forEach(evt=>{
-
-    document.addEventListener(
-        evt,
-        e=>e.preventDefault()
-    );
-
+["contextmenu","copy","cut","paste","dragstart","selectstart"].forEach(evt=>{
+    document.addEventListener(evt,e=>e.preventDefault());
 });
 
 ////////////////////////////////////////////////////////
 // LOCK
 ////////////////////////////////////////////////////////
-
 function lockScreen(){
-
-    document
-    .getElementById("blocked")
-    .style.display="flex";
-
+    document.getElementById("blocked").style.display="flex";
     hideContent();
-
 }
-
-////////////////////////////////////////////////////////
-// HIDE CONTENT
-////////////////////////////////////////////////////////
-
 function hideContent(){
-
-    ebook.classList.add(
-        "blur"
-    );
-
-    ebook.classList.add(
-        "screenshot-protect"
-    );
-
+    ebook.classList.add("blur", "screenshot-protect");
 }
-
-////////////////////////////////////////////////////////
-// SHOW CONTENT
-////////////////////////////////////////////////////////
-
 function showContent(){
-
     setTimeout(()=>{
-
-        ebook.classList.remove(
-            "blur"
-        );
-
-        ebook.classList.remove(
-            "screenshot-protect"
-        );
-
+        ebook.classList.remove("blur","screenshot-protect");
     },300);
-
 }
 
 ////////////////////////////////////////////////////////
 // TECLAS
 ////////////////////////////////////////////////////////
-
-document.addEventListener(
-"keydown",
-async e=>{
-
-    const key =
-    e.key.toLowerCase();
-
+document.addEventListener("keydown", async e=>{
+    const key = e.key.toLowerCase();
     if(
-
         e.key==="F12" ||
-
         e.key==="PrintScreen" ||
-
-        (
-            e.ctrlKey &&
-            ["s","u","p","c","a","i","j"]
-            .includes(key)
-        )
-
+        (e.ctrlKey && ["s","u","p","c","a","i","j"].includes(key))
     ){
-
         e.preventDefault();
-
-        try{
-
-            await navigator
-            .clipboard
-            .writeText("");
-
-        }catch(err){}
-
+        try{ await navigator.clipboard.writeText(""); }catch(err){}
         lockScreen();
-
     }
-
 });
 
 ////////////////////////////////////////////////////////
 // DEVTOOLS
 ////////////////////////////////////////////////////////
-
 setInterval(()=>{
-
-    const width =
-    window.outerWidth -
-    window.innerWidth > 160;
-
-    const height =
-    window.outerHeight -
-    window.innerHeight > 160;
-
-    if(width || height){
-
-        lockScreen();
-
-    }
-
+    const width = window.outerWidth - window.innerWidth > 160;
+    const height = window.outerHeight - window.innerHeight > 160;
+    if(width || height){ lockScreen(); }
 },1000);
 
 ////////////////////////////////////////////////////////
 // IOS / SAFARI PROTECTION
 ////////////////////////////////////////////////////////
-
-window.addEventListener(
-    "blur",
-    hideContent
-);
-
-window.addEventListener(
-    "focus",
-    showContent
-);
-
-document.addEventListener(
-"visibilitychange",
-()=>{
-
-    if(document.hidden){
-
-        hideContent();
-
-    }else{
-
-        showContent();
-
-    }
-
+window.addEventListener("blur", hideContent);
+window.addEventListener("focus", showContent);
+document.addEventListener("visibilitychange", ()=>{
+    if(document.hidden){ hideContent(); }else{ showContent(); }
 });
-
-window.addEventListener(
-    "pagehide",
-    hideContent
-);
-
-window.addEventListener(
-    "beforeunload",
-    hideContent
-);
-
-document.addEventListener(
-"gesturestart",
-e=>{
-
-    e.preventDefault();
-
-    hideContent();
-
-});
+window.addEventListener("pagehide", hideContent);
+window.addEventListener("beforeunload", hideContent);
+document.addEventListener("gesturestart", e=>{ e.preventDefault(); hideContent(); });
 
 ////////////////////////////////////////////////////////
 // TOUCH
 ////////////////////////////////////////////////////////
-
-document.addEventListener(
-"touchstart",
-e=>{
-
-    if(e.touches.length>2){
-
-        lockScreen();
-
-    }
-
+document.addEventListener("touchstart", e=>{
+    if(e.touches.length>2){ lockScreen(); }
 });
 
 ////////////////////////////////////////////////////////
 // PRINT
 ////////////////////////////////////////////////////////
-
 window.onbeforeprint=()=>false;
 
 ////////////////////////////////////////////////////////
 // ANTI DEBUG
 ////////////////////////////////////////////////////////
-
 (function(){
-
     function detect(){
-
-        const start =
-        performance.now();
-
+        const start = performance.now();
         debugger;
-
-        const end =
-        performance.now();
-
-        if(end-start>120){
-
-            lockScreen();
-
-        }
-
+        const end = performance.now();
+        if(end-start>120){ lockScreen(); }
     }
-
-    setInterval(
-        detect,
-        1200
-    );
-
+    setInterval(detect,1200);
 })();
 
 ////////////////////////////////////////////////////////
 // DESABILITAR CACHE
 ////////////////////////////////////////////////////////
-
 if("caches" in window){
-
-    caches.keys().then(names=>{
-
-        names.forEach(name=>{
-
-            caches.delete(name);
-
-        });
-
-    });
-
+    caches.keys().then(names=>{ names.forEach(name=>{ caches.delete(name); }); });
 }
 
 ////////////////////////////////////////////////////////
 // INSPECIONAR
 ////////////////////////////////////////////////////////
-
-document.addEventListener(
-    "inspect",
-    ()=>lockScreen()
-);
+document.addEventListener("inspect", ()=>lockScreen());
 
 ////////////////////////////////////////////////////////
 // PRINTSCREEN
 ////////////////////////////////////////////////////////
-
-document.addEventListener(
-"keyup",
-e=>{
-
-    if(e.key==="PrintScreen"){
-
-        navigator.clipboard
-        .writeText("");
-
-        lockScreen();
-
-    }
-
+document.addEventListener("keyup", e=>{
+    if(e.key==="PrintScreen"){ navigator.clipboard.writeText(""); lockScreen(); }
 });
 
 ////////////////////////////////////////////////////////
 // IOS DETECT
 ////////////////////////////////////////////////////////
-
-const isIOS =
-/iPad|iPhone|iPod/
-.test(
-    navigator.userAgent
-);
-
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 if(isIOS){
-
     hideContent();
-
-    setTimeout(()=>{
-
-        showContent();
-
-    },800);
-
+    setTimeout(showContent, 800);
     setInterval(()=>{
-
-        if(
-
-            document.hidden ||
-
-            !document.hasFocus()
-
-        ){
-
-            hideContent();
-
-        }
-
+        if(document.hidden || !document.hasFocus()){ hideContent(); }
     },200);
-
 }
-
 </script>
 
 </body>
