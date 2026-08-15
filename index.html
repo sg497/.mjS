@@ -1,103 +1,29 @@
-<!DOCTYPE html>
-<html lang="pt">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Login</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  color: white;
-}
-
-/* LOGO FORA DA BOX */
-.logo {
-  width: 180px;
-  height: auto;
-  object-fit: contain;
-  margin-bottom: 20px;
-}
-
-/* caixa login */
-.box {
-  background: #020617;
-  padding: 30px;
-  border-radius: 10px;
-  width: 320px;
-  text-align: center;
-}
-
-input, button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 5px;
-  border: none;
-}
-
-button {
-  background: #38bdf8;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #0ea5e9;
-}
-
-/* responsivo */
-@media (max-width: 500px) {
-  .box {
-    width: 85%;
-  }
-
-  .logo {
-    width: 140px;
-    height: auto;
-  }
-}
-</style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kandengue Atrevido School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
+<div id="splash"><div class="splash-logo">K</div><div class="splash-name">KANDENGUE ATREVIDO <span>SCHOOL</span></div><div class="loader"></div></div>
+<header class="topbar">
+<a class="brand" href="/"><span class="brand-mark">K</span><span>Kandengue<br><b>Atrevido</b> <em>SCHOOL</em></span></a>
+<nav><a href="#categorias">Categorias</a><a href="#cursos">Cursos</a><a href="#instrutor">Seja um instrutor</a></nav>
+<div class="search"><input id="search" placeholder="O que você quer aprender hoje?"><span>⌕</span></div>
+<button id="themeToggle" class="theme-toggle" title="Alternar tema">☾</button><div id="userArea"><button class="outline" onclick="openAuth('login')">Entrar</button><button class="btn-red" onclick="openAuth('register')">Criar conta</button></div>
+</header>
+<main>
+<section class="hero"><div class="hero-copy"><p class="eyebrow">APRENDA NO SEU RITMO</p><h1>Aprenda hoje.<br>Transforme<br><span>seu amanhã.</span></h1><p>Curso online de qualidade para você aprender no seu ritmo e alcançar seus objetivos.</p><button class="btn-red big" onclick="document.querySelector('#cursos').scrollIntoView({behavior:'smooth'})">Explorar cursos</button></div><div class="hero-art"><img src="hero-reference.jpg" alt="Aluno estudando com notebook"></div></section>
+<section class="benefits"><div><b>▶</b><strong>Aprenda do seu jeito</strong><span>Acesse os cursos quando e onde quiser.</span></div><div><b>♙</b><strong>Instrutores especialistas</strong><span>Aprenda com quem é referência no assunto.</span></div><div><b>▤</b><strong>Certificados</strong><span>Comprove suas habilidades e impulsione sua carreira.</span></div><div><b>⌁</b><strong>Acesso ilimitado</strong><span>Pagamento único, aprendizado para sempre.</span></div></section>
+<section id="categorias" class="section"><div class="section-head"><div><p class="eyebrow">ENCONTRE SEU PRÓXIMO PASSO</p><h2>Explore por categoria</h2></div></div><div class="categories"><button data-cat="Desenvolvimento">〈/〉<span>Desenvolvimento</span></button><button data-cat="Negócios">▥<span>Negócios</span></button><button data-cat="Design">✎<span>Design</span></button><button data-cat="Marketing">⚑<span>Marketing</span></button><button data-cat="Produtividade">✓<span>Produtividade</span></button><button data-cat="Pessoal">♙<span>Pessoal</span></button><button data-cat="Fotografia">▣<span>Fotografia</span></button><button data-cat="Música">♫<span>Música</span></button></div></section>
+<section id="cursos" class="section"><div class="section-head"><div><p class="eyebrow">MAIS PROCURADOS</p><h2>Cursos em destaque</h2></div></div><div id="courses" class="course-grid"></div></section>
+<section id="instrutor" class="cta"><div><div class="cta-icon">◇</div><div><h2>Aprender é o primeiro passo.<br>Transformar é o destino.</h2><p>Junte-se a milhares de alunos e evolua com a Kandengue Atrevido School.</p></div></div><button class="btn-red">Seja um instrutor</button></section>
+</main>
+<footer><div><div class="brand"><span class="brand-mark">K</span><span>Kandengue<br><b>Atrevido</b> <em>SCHOOL</em></span></div><p>Educação de qualidade, acessível e transformadora para todos.</p></div><div><h4>Navegação</h4><a href="/">Início</a><a href="#categorias">Categorias</a><a href="#cursos">Cursos</a></div><div><h4>Suporte</h4><a href="#">Central de Ajuda</a><a href="#">Fale Conosco</a><a href="#">Privacidade</a></div><div><h4>Empresa</h4><a href="#">Sobre Nós</a><a href="#">Carreiras</a><a href="#">Parcerias</a></div><div><h4>Receba novidades</h4><p>Conteúdos exclusivos no seu e-mail.</p><div class="newsletter"><input placeholder="Seu e-mail"><button>→</button></div></div><small>© 2026 Kandengue Atrevido School.</small></footer>
 
-<!-- LOGO FORA DA BOX -->
-<img src="Cleanvault actualizado.png" class="logo" alt="Logo">
-
-<div class="box">
-  <h2>🔐 Login</h2>
-
-  <input id="user" placeholder="Usuário">
-  <input id="pass" type="password" placeholder="Senha">
-
-  <button onclick="login()">Entrar</button>
-</div>
-
-<script>
-function login() {
-  const user = document.getElementById("user").value;
-  const pass = document.getElementById("pass").value;
-
-  const users = JSON.parse(localStorage.getItem("users")) || [];
-
-  const found = users.find(u => u.username === user && u.password === pass);
-
-  if(found) {
-    localStorage.setItem("loggedUser", user);
-    window.location.href = "ebook.html";
-  } else {
-    alert("Usuário ou senha incorretos");
-  }
-}
-</script>
-
-</body>
-</html>
+<div id="auth" class="modal"><div class="modal-card"><button class="close" onclick="closeAuth()">×</button><div class="auth-logo">K</div><div class="tabs"><button id="tabLogin" onclick="switchAuth('login')">Entrar</button><button id="tabRegister" onclick="switchAuth('register')">Criar conta</button></div><form id="authForm"><label id="nameLabel">Nome<input id="name"></label><label>E-mail<input id="email" type="email" required></label><label>Senha<input id="password" type="password" minlength="8" required></label><button class="btn-red big" type="submit" id="authSubmit">Entrar</button><button class="demo-btn" type="button" onclick="createDemo()">Criar conta fictícia de teste</button><p id="authMsg"></p></form></div></div>
+<script src="app.js"></script>
+</body></html>
